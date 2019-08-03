@@ -8,7 +8,7 @@
 
 import UIKit
 import Alamofire
-import Realm
+import RealmSwift
 
 //class ViewController: UIViewController {
 //
@@ -52,7 +52,8 @@ class ViewController: UITableViewController {
     
     let cellId = "cellId"
 
-    let dataForTableView = ["Number"]
+    var dataForTableView: [Mood] = []
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,7 +63,20 @@ class ViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .done, target: self, action: #selector(addTapped))
 
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        
+//        print("Moods:", [0])
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let test = try! Realm().objects(Mood.self)
+//        print(test)
+        dataForTableView = []
+        for i in test {
+            dataForTableView.append(i)
+        }
+        tableView.reloadData()
+    }
+    
     
     @objc func addTapped(sender: UIBarButtonItem) {
         print("New VC")
@@ -78,8 +92,8 @@ class ViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
 
         //        let name = indexPath.section == 0 ? names[indexPath.row] : cNames[indexPath.row]
-        let name = dataForTableView[indexPath.row]
-        cell.textLabel?.text = name
+        let mood = dataForTableView[indexPath.row]
+        cell.textLabel?.text = "I felt \(mood.mood) at \(mood.temp)°"
 
 //        // Adding an image
 //        var image : UIImage = #imageLiteral(resourceName: "Screen Shot 2018-11-08 at 1.04.35 PM")
